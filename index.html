@@ -8,8 +8,48 @@
   <body>
     <div id="app">
       <h1>Inns App</h1>
-      <button v-on:click="getData">Trocar dados</button>
-      <h2>{{fristName}}</h2>
+      <button v-on:click="getInns">Carregar pousadas</button>
+
+      <ul v-if="seeList">
+        <li v-for="inn in innList">
+          <div>
+            <h3>{{inn.brandName}}</h3>
+            Telefone: {{inn.phone}} <br />
+            E-mail: {{inn.email}} <br />
+            {{inn.city}}, {{inn.state}} <br />
+            Aceita pets: {{inn.pets}} <br />
+            <button v-on:click="getInn(inn.id)">Acessar Pousada</button>
+          </div>
+        </li>
+      </ul>
+
+      <div v-if="innSelect">
+        <h2>{{innSelect.bran_name}} Rating: {{innSelect.nota || "--"}}</h2>
+        <strong>Telefone:</strong> {{innSelect.phone}} |
+        <strong>Email:</strong> {{innSelect.email}} <br />
+        <strong>Endereço:</strong> {{innSelect.address}},
+        {{innSelect.neighborhood}}, {{innSelect.city}} - {{innSelect.state}}
+        <br />
+        <strong>Metodos de pagamento:</strong> {{innSelect.payment_options}} |
+        <strong>Pets:</strong> {{innSelect.pets}} <br />
+        <strong>Politicas:</strong> {{innSelect.policies}} <br />
+        <strong>Descrição:</strong> {{innSelect.description}} <br />
+        <button v-on:click="backList">Lista de Pousadas</button>
+        <ul>
+          <li v-for="room in roomList">
+            <div>
+              <h3>{{room.name}}</h3>
+              <strong>Detalhes: </strong> <br />
+              Tamanho: {{room.dimension}}m² | Capacidade: {{room.capacity}}
+              <br />
+              Banheiro: {{room.bathroom}} | Varanda: {{room.balcony}} |
+              Ar-condicionado: {{room.arConditioning}} <br />
+              Tv: {{room.tv}} | Cofre: {{room.safe}} | Guarda-roupa:
+              {{room.wardrobe}} <br />
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
 
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
