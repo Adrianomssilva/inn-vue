@@ -8,10 +8,17 @@
   <body>
     <div id="app">
       <h1>Inns App</h1>
+      <input
+        type="text"
+        v-model="searchText"
+        placeholder="Pesquise sua pousada"
+      />
+      <br />
       <button v-on:click="getInns">Carregar pousadas</button>
 
       <ul v-if="seeList">
-        <li v-for="inn in innList">
+        <div v-if="listResult.length <= 0">Nenhum contato encontrado.</div>
+        <li v-for="inn in listResult">
           <div>
             <h3>{{inn.brandName}}</h3>
             Telefone: {{inn.phone}} <br />
@@ -24,7 +31,7 @@
       </ul>
 
       <div v-if="innSelect">
-        <h2>{{innSelect.bran_name}} Rating: {{innSelect.nota || "--"}}</h2>
+        <h2>{{innSelect.brand_name}} | Rating: {{innSelect.nota || "--"}}</h2>
         <strong>Telefone:</strong> {{innSelect.phone}} |
         <strong>Email:</strong> {{innSelect.email}} <br />
         <strong>Endereço:</strong> {{innSelect.address}},
@@ -35,6 +42,35 @@
         <strong>Politicas:</strong> {{innSelect.policies}} <br />
         <strong>Descrição:</strong> {{innSelect.description}} <br />
         <button v-on:click="backList">Lista de Pousadas</button>
+
+        <h4>Verificar disponibilidade:</h4>
+        <form v-on:submit.prevent="checkAvailability()">
+          <label for="room_id">Selecione o quarto:</label>
+          <select v-model="reservation.roomId">
+            <option v-for="room in roomList" :value="room.id">
+              {{room.name}}
+            </option>
+          </select>
+          <label for="start_date">Data de entrada:</label>
+          <input type="date" v-model="reservation.startDate" /><br />
+          <label for="end_date">Data de saída:</label>
+          <input type="date" v-model="reservation.endDate" /><br />
+          <label for="guest_number">Data de saída:</label>
+          <input type="number" v-model="reservation.guestNumber" /><br />
+          <button type="submit">Verificar</button>
+        </form>
+        <div v-if="errorsFull">
+          <p v-for="error in errorsFull">{{error}}</p>
+        </div>
+        <div v-if="validationSelect">
+          <p><strong>Reserva disponível</strong></p>
+          <br />
+          Data de entrada: {{validationSelect.start_date}} | Data de saída:
+          {{validationSelect.end_date}} <br />
+          Hóspedes: {{validationSelect.guest_number}} | Valor:
+          {{validationSelect.total_value}}
+        </div>
+
         <ul>
           <li v-for="room in roomList">
             <div>

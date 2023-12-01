@@ -1,11 +1,34 @@
 const app = Vue.createApp({
   data() {
     return {
+      searchText: '',
       innList: [],
       seeList: true,
       innSelect: null,
       roomList: [],
+      reservation: {
+        starDate: '',
+        endDate: '',
+        guestNumber: 1,
+        roomId: '',
+      },
+      errorsFull: [],
+      validationSelect: null,
     }
+  },
+
+  computed: {
+    listResult() {
+      if (this.searchText) {
+        return this.innList.filter((inn) => {
+          return inn.brandName
+            .toLowerCase()
+            .includes(this.searchText.toLowerCase())
+        })
+      } else {
+        return this.innList
+      }
+    },
   },
 
   methods: {
@@ -66,6 +89,34 @@ const app = Vue.createApp({
 
         this.roomList.push(room)
       })
+    },
+
+    async checkAvailability() {
+      let requestData = {
+        room_id: this.reservation.roomId,
+        start_date: this.reservation.startDate,
+        end_date: this.reservation.endDate,
+        guest_number: this.reservation.guestNumber,
+      }
+      console.log(requestData)
+      this.errorsFull = []
+      this.validationSelect = null
+      let response = await fetch(`http://localhost:3000/api/v1/reservations`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      })
+      let data = await response.json()
+      if (data.errors && data.errors.length > 0) {
+        data.errors.forEach((item) => {
+          this.errorsFull.push(item)
+        })
+      } else {
+        this.validationSelect = data
+        console.log(this.validationSelect)
+      }
     },
   },
 })
