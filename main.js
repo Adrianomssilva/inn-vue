@@ -31,6 +31,10 @@ const app = Vue.createApp({
     },
   },
 
+  async mounted() {
+    this.listResult = await this.getInns()
+  },
+
   methods: {
     async getInns() {
       let response = await fetch('http://localhost:3000/api/v1/inns')
@@ -71,7 +75,6 @@ const app = Vue.createApp({
       )
       this.roomList = []
       let data = await response.json()
-      console.log(data)
       data.forEach((item) => {
         var room = new Object()
         room.name = item.name
@@ -98,7 +101,7 @@ const app = Vue.createApp({
         end_date: this.reservation.endDate,
         guest_number: this.reservation.guestNumber,
       }
-      console.log(requestData)
+
       this.errorsFull = []
       this.validationSelect = null
       let response = await fetch(`http://localhost:3000/api/v1/reservations`, {
